@@ -1,0 +1,518 @@
+/* ========================================
+   STREAK
+======================================== */
+
+.streak-card {
+  padding: 18px;
+  margin-bottom: 14px;
+}
+
+/* Header */
+
+.streak-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.streak-value {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 7px;
+}
+
+.streak-fire {
+  font-size: 17px;
+}
+
+.streak-value strong {
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.streak-value > span:last-child {
+  color: #77777f;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.streak-month {
+  color: #77777f;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ========================================
+   WEEK CALENDAR
+======================================== */
+
+.week-calendar {
+  width: 100%;
+}
+
+.week-days,
+.week-status,
+.week-dates {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+}
+
+/* Day names */
+
+.week-days {
+  margin-bottom: 8px;
+}
+
+.week-days span {
+  color: #5f5f67;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.week-days .off-day-label {
+  color: #55555d;
+}
+
+/* Status */
+
+.week-status {
+  align-items: center;
+}
+
+.calendar-day {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.workout-dot {
+  color: #eeeeef;
+  font-size: 19px;
+  line-height: 1;
+}
+
+.empty-dot {
+  color: #393940;
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* Today */
+
+.calendar-day.today {
+  width: 32px;
+  height: 32px;
+  margin: auto;
+  border-radius: 10px;
+  background: #eeeeef;
+}
+
+.calendar-day.today .workout-dot {
+  color: #101012;
+}
+
+.calendar-day.today .empty-dot {
+  color: #55555d;
+}
+
+/* OFF Day */
+
+.calendar-day.off-day {
+  color: #55555d;
+}
+
+.off-label {
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+/* Dates */
+
+.week-dates {
+  margin-top: 6px;
+}
+
+.week-dates span {
+  color: #5f5f67;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.week-dates .current-date {
+  color: #eeeeef;
+  font-weight: 800;
+}
+
+/* ========================================
+   STREAK NOTE
+======================================== */
+
+.streak-note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #222228;
+  color: #55555d;
+  font-size: 9px;
+}
+
+.streak-note span:last-child {
+  color: #77777f;
+  font-weight: 600;
+}
+
+/* ========================================
+   STRENGTH PROGRESS (Split Layout)
+======================================== */
+
+.progress-card {
+  padding: 22px;
+  margin-bottom: 14px;
+}
+
+.progress-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.progress-top h3 {
+  font-size: 17px;
+  font-weight: 750;
+  margin-top: 2px;
+}
+
+.progress-select {
+  width: 100%;
+  max-width: 160px;
+  padding: 9px 10px;
+  border: 1px solid #292930;
+  border-radius: 9px;
+  background: #19191d;
+  color: #cfcfd3;
+  font-size: 11px;
+  color-scheme: dark;
+  cursor: pointer;
+}
+
+.progress-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: center;
+}
+
+/* ========================================
+   4-BOX STATS GRID (Left Side)
+======================================== */
+
+.progress-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.stat-box {
+  background: #151518;
+  border: 1px solid #222228;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.stat-box span {
+  color: #77777f;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.stat-box strong {
+  font-size: 20px;
+  font-weight: 800;
+  color: #eeeeef;
+}
+
+.stat-box strong small {
+  font-size: 11px;
+  font-weight: 600;
+  color: #77777f;
+  margin-left: 2px;
+}
+
+/* Empty Progress */
+.progress-empty {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 0;
+}
+
+.chart-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #19191d;
+  border: 1px solid #292930;
+  border-radius: 10px;
+  color: #77777f;
+  font-size: 16px;
+}
+
+.progress-empty h4 {
+  font-size: 13px;
+  color: #e5e5e8;
+  margin-bottom: 3px;
+}
+
+.progress-empty p {
+  font-size: 10px;
+  color: #65656d;
+}
+
+/* ========================================
+   BAR CHART (Right Side)
+======================================== */
+
+.bar-chart {
+  background: #151518;
+  border: 1px solid #222228;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 160px;
+  gap: 10px;
+}
+
+.bar-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.bar-value {
+  font-size: 8px;
+  color: #e5e5e8;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.bar-reps-sub {
+  color: #77777f;
+  font-weight: 500;
+  font-size: 7px;
+}
+
+.bar-track {
+  width: 100%;
+  max-width: 22px;
+  height: 100px;
+  background: #1c1c21;
+  border-radius: 6px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.bar-fill {
+  width: 100%;
+  background: #f5f5f5;
+  border-radius: 6px 6px 0 0;
+  transition: height 0.3s ease;
+}
+
+.bar-column span {
+  color: #77777f;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+/* ========================================
+   REST DAY SELECTOR
+======================================== */
+
+.rest-day-container {
+  position: relative;
+}
+
+.rest-day-button {
+  min-width: 110px;
+  padding: 7px 9px;
+  border: 1px solid #292930;
+  border-radius: 10px;
+  background: #19191d;
+  text-align: right;
+  cursor: pointer;
+}
+
+.rest-day-button span {
+  display: block;
+  color: #5f5f67;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.rest-day-button strong {
+  display: block;
+  margin-top: 3px;
+  color: #aaaab2;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ========================================
+   REST DAY POPUP
+======================================== */
+
+.rest-day-popup {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 50;
+  width: 235px;
+  padding: 15px;
+  border: 1px solid #29292f;
+  border-radius: 15px;
+  background: #131316;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+}
+
+.rest-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.rest-popup-header strong {
+  color: #e5e5e8;
+  font-size: 13px;
+}
+
+.rest-popup-header button {
+  width: 25px;
+  height: 25px;
+  border-radius: 7px;
+  background: #1c1c21;
+  color: #77777f;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.rest-day-popup > p {
+  margin-bottom: 12px;
+  color: #65656d;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+/* ========================================
+   REST OPTIONS
+======================================== */
+
+.rest-day-options {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.rest-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  color: #8a8a92;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.rest-option:hover {
+  background: #1a1a1f;
+}
+
+.rest-option.checked {
+  background: #1c1c21;
+  color: #e5e5e8;
+}
+
+.rest-option input {
+  width: 14px;
+  height: 14px;
+  accent-color: #f5f5f5;
+  cursor: pointer;
+}
+
+/* ========================================
+   DONE BUTTON
+======================================== */
+
+.rest-done-button {
+  width: 100%;
+  height: 36px;
+  margin-top: 12px;
+  border-radius: 9px;
+  background: #f5f5f5;
+  color: #0b0b0d;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.rest-done-button:hover {
+  opacity: 0.88;
+}
+
+/* ========================================
+   MOBILE RESPONSIVE
+======================================== */
+
+@media (max-width: 600px) {
+  .progress-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .progress-top select {
+    max-width: 130px;
+  }
+}
+
+@media (max-width: 400px) {
+  .streak-header {
+    align-items: flex-start;
+  }
+
+  .rest-day-popup {
+    right: -5px;
+    width: 220px;
+  }
+}

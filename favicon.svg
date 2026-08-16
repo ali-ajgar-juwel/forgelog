@@ -1,0 +1,38 @@
+<svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer Shape -->
+  <rect x="2" y="2" width="44" height="44" rx="13" fill="#151518" />
+  <rect x="2.5" y="2.5" width="43" height="43" rx="12.5" stroke="#29292F" />
+
+  <!-- Forged "F" Symbol -->
+  <path
+    d="
+      M14 12
+      H34
+      V17
+      H20
+      V21
+      H31
+      V26
+      H20
+      V36
+      H14
+      Z
+    "
+    fill="#EEEEEF"
+  />
+
+  <!-- Forge Cut / Energy Slash -->
+  <path
+    d="
+      M27 12
+      H34
+      L24 27
+      H18
+      Z
+    "
+    fill="#77777F"
+  />
+
+  <!-- Small bottom accent -->
+  <rect x="14" y="34" width="10" height="2" rx="1" fill="#77777F" />
+</svg>

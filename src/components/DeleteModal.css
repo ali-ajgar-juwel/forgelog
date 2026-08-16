@@ -1,0 +1,239 @@
+/* ========================================
+   DELETE OVERLAY
+======================================== */
+
+.delete-overlay {
+  position: fixed !important;
+
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+
+  width: 100%;
+  height: 100%;
+
+  z-index: 9999;
+
+  display: flex !important;
+
+  align-items: flex-end !important;
+  justify-content: center !important;
+
+  padding: 0 !important;
+
+  margin: 0 !important;
+
+  background: rgba(0, 0, 0, 0.65);
+}
+
+
+/* ========================================
+   DELETE BOTTOM SHEET
+======================================== */
+
+.delete-modal {
+  position: relative;
+
+  width: 100%;
+
+  max-width: 420px;
+
+  box-sizing: border-box;
+
+  padding: 12px 18px 20px;
+
+  margin: 0 !important;
+
+  border: 1px solid #29292f;
+
+  border-bottom: none;
+
+  border-radius: 22px 22px 0 0;
+
+  background: #131316;
+
+  text-align: center;
+
+  box-shadow:
+    0 -15px 50px rgba(0, 0, 0, 0.5);
+
+  animation:
+    deleteSheetUp
+    0.22s ease-out;
+}
+
+
+/* ========================================
+   HANDLE
+======================================== */
+
+.delete-handle {
+  width: 38px;
+  height: 4px;
+
+  margin: 0 auto 18px;
+
+  border-radius: 10px;
+
+  background: #38383f;
+}
+
+
+/* ========================================
+   ICON
+======================================== */
+
+.delete-icon {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 13px;
+
+  border-radius: 13px;
+
+  background: rgba(217, 54, 54, 0.12);
+
+  color: #ef5555;
+
+  font-size: 19px;
+  font-weight: 800;
+}
+
+
+/* ========================================
+   TITLE
+======================================== */
+
+.delete-modal h3 {
+  margin: 0;
+
+  color: #f0f0f2;
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+
+/* ========================================
+   TEXT
+======================================== */
+
+.delete-modal p {
+  margin: 7px auto 0;
+
+  max-width: 310px;
+
+  color: #85858d;
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+
+.delete-modal p strong {
+  color: #e7e7ea;
+}
+
+
+.delete-modal .warning-text {
+  margin-top: 4px;
+
+  color: #66666e;
+
+  font-size: 9px;
+}
+
+
+/* ========================================
+   BUTTONS
+======================================== */
+
+.delete-modal .modal-actions {
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    1fr;
+
+  gap: 8px;
+
+  margin-top: 18px;
+}
+
+
+.delete-modal .modal-actions button {
+  width: 100%;
+  height: 42px;
+
+  border-radius: 10px;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+/* CANCEL */
+
+.delete-modal .secondary-button {
+  border: 1px solid #29292f;
+
+  background: #1b1b20;
+
+  color: #aaaab2;
+}
+
+
+/* DELETE */
+
+.delete-modal .danger-button {
+  border: none;
+
+  background: #d93636;
+
+  color: white;
+}
+
+
+/* ========================================
+   ANIMATION
+======================================== */
+
+@keyframes deleteSheetUp {
+
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+
+}
+
+
+/* ========================================
+   DESKTOP
+======================================== */
+
+@media (min-width: 600px) {
+
+  .delete-modal {
+    max-width: 380px;
+
+    margin-bottom: 0 !important;
+
+    border-bottom: 1px solid #29292f;
+
+    border-radius: 20px;
+  }
+
+}

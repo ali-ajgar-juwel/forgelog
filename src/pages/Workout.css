@@ -1,0 +1,612 @@
+.today {
+  color: #77777f;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+
+/* ========================================
+   EMPTY STATE
+======================================== */
+
+.workout-empty {
+  padding: 32px 18px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+}
+
+
+.workout-icon {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 12px;
+
+  border-radius: 13px;
+
+  background: #1c1c21;
+  color: #aaaab2;
+
+  font-size: 23px;
+}
+
+
+.workout-empty h3 {
+  margin: 0;
+
+  font-size: 16px;
+}
+
+
+.workout-empty p {
+  max-width: 270px;
+
+  margin: 7px 0 17px;
+
+  color: #686870;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* ========================================
+   WORKOUT LIST
+======================================== */
+
+.workout-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+
+/* ========================================
+   WORKOUT CARD
+======================================== */
+
+.workout-card {
+  padding: 13px;
+}
+
+
+.workout-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 13px;
+}
+
+
+.workout-card-header > div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+
+.exercise-number {
+  width: 29px;
+  height: 29px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 8px;
+
+  background: #1d1d22;
+  color: #8d8d95;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+
+.workout-card-header h3 {
+  margin: 0;
+
+  font-size: 14px;
+}
+
+
+.workout-card-header span:not(.exercise-number) {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #686870;
+  font-size: 9px;
+}
+
+
+.remove-exercise {
+  width: 27px;
+  height: 27px;
+
+  flex-shrink: 0;
+
+  border-radius: 7px;
+
+  background: #1b1b20;
+  color: #73737b;
+
+  font-size: 16px;
+}
+
+
+/* ========================================
+   SET HEADER
+======================================== */
+
+.sets-header {
+  display: grid;
+
+  /*
+    SET
+    WEIGHT
+    REPS
+    DELETE
+  */
+
+  grid-template-columns:
+    30px
+    minmax(0, 1fr)
+    minmax(0, 1fr)
+    25px;
+
+  align-items: center;
+
+  margin-bottom: 5px;
+
+  color: #5f5f67;
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: 0.8px;
+}
+
+
+.sets-header span:nth-child(2),
+.sets-header span:nth-child(3) {
+  text-align: center;
+}
+
+
+/* ========================================
+   SET LIST
+======================================== */
+
+.sets-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+}
+
+
+.set-row {
+  display: grid;
+
+  grid-template-columns:
+    30px
+    minmax(0, 1fr)
+    minmax(0, 1fr)
+    25px;
+
+  align-items: center;
+
+  gap: 5px;
+}
+
+
+/* ========================================
+   SET NUMBER
+======================================== */
+
+.set-number {
+  color: #77777f;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  text-align: center;
+}
+
+
+/* ========================================
+   SET INPUT
+======================================== */
+
+.set-input {
+  position: relative;
+
+  width: 100%;
+}
+
+
+.set-input input,
+.set-row > input {
+  width: 100%;
+  height: 34px;
+
+  box-sizing: border-box;
+
+  padding: 0 6px;
+
+  border: 1px solid #292930;
+  border-radius: 8px;
+
+  background: #0e0e11;
+  color: white;
+
+  text-align: center;
+
+  font-size: 12px;
+}
+
+
+.set-input span {
+  position: absolute;
+
+  right: 7px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: #5f5f67;
+
+  font-size: 8px;
+
+  pointer-events: none;
+}
+
+
+/* ========================================
+   REMOVE SET
+======================================== */
+
+.remove-set {
+  width: 25px;
+  height: 25px;
+
+  margin: 0;
+
+  border-radius: 7px;
+
+  background: #1b1b20;
+  color: #686870;
+
+  font-size: 14px;
+}
+
+
+/* ========================================
+   ADD SET
+======================================== */
+
+.add-set-button {
+  width: 100%;
+  height: 32px;
+
+  margin-top: 8px;
+
+  border: 1px dashed #303038;
+  border-radius: 8px;
+
+  background: transparent;
+  color: #85858d;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+
+.add-set-button:hover {
+  background: #19191d;
+}
+
+
+/* ========================================
+   ADD WORKOUT EXERCISE
+======================================== */
+
+.add-workout-exercise {
+  width: 100%;
+  min-height: 42px;
+
+  border: 1px dashed #303038;
+  border-radius: 10px;
+
+  background: transparent;
+  color: #9999a1;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+
+.add-workout-exercise:hover {
+  background: #151519;
+}
+
+
+/* ========================================
+   SAVE WORKOUT
+======================================== */
+
+.save-workout-button {
+  width: 100%;
+  height: 46px;
+
+  margin-top: 1px;
+
+  border-radius: 11px;
+
+  background: #f5f5f5;
+  color: #0b0b0d;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  letter-spacing: 0.7px;
+}
+
+
+.save-workout-button:hover {
+  opacity: 0.88;
+}
+
+
+/* ========================================
+   EXERCISE PICKER
+======================================== */
+
+.picker-modal {
+  width: calc(100% - 24px);
+  max-width: 420px;
+  max-height: 78vh;
+
+  overflow: hidden;
+
+  border: 1px solid #29292f;
+  border-radius: 17px;
+
+  background: #131316;
+}
+
+
+.picker-modal .modal-header {
+  padding: 16px 17px 13px;
+
+  margin-bottom: 0;
+
+  border-bottom: 1px solid #222228;
+}
+
+
+.picker-list {
+  max-height: 58vh;
+
+  overflow-y: auto;
+
+  padding: 6px;
+}
+
+
+.picker-item {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 11px;
+
+  border-radius: 9px;
+
+  background: transparent;
+  color: #e5e5e8;
+
+  text-align: left;
+}
+
+
+.picker-item:hover {
+  background: #1c1c21;
+}
+
+
+.picker-item.selected {
+  background: #1e1e23;
+}
+
+
+.picker-item strong {
+  display: block;
+
+  font-size: 12px;
+}
+
+
+.picker-item div span {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #686870;
+
+  font-size: 9px;
+}
+
+
+.picker-item > span {
+  color: #aaaab2;
+
+  font-size: 16px;
+}
+.workout-date-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.auto-save-message {
+  color: #77777f;
+  font-size: 9px;
+  font-weight: 600;
+}
+/* ========================================
+   WORKOUT DATE PICKER
+======================================== */
+
+.workout-date-picker {
+  display: flex;
+  align-items: center;
+}
+
+
+.workout-date-picker input {
+  width: 125px;
+  height: 36px;
+
+  padding: 0 9px;
+
+  border: 1px solid #292930;
+  border-radius: 9px;
+
+  background: #19191d;
+  color: #cfcfd3;
+
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+
+.workout-date-picker input:focus {
+  outline: none;
+  border-color: #44444d;
+}
+
+
+.selected-date-label {
+  margin: -5px 0 14px;
+
+  color: #686870;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+
+/* ========================================
+   READ ONLY WORKOUT
+======================================== */
+
+.set-row input:disabled {
+  opacity: 0.75;
+  cursor: default;
+}
+
+
+.set-row input:disabled {
+  background: #121215;
+  color: #aaaab2;
+}
+/* ========================================
+   DATE PICKER
+======================================== */
+
+.page-heading input[type="date"] {
+  width: 125px;
+  height: 38px;
+
+  padding: 0 10px;
+
+  border: 1px solid #292930;
+  border-radius: 10px;
+
+  background: #131316;
+  color: #cfcfd3;
+
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+
+  outline: none;
+
+  cursor: pointer;
+
+  color-scheme: dark;
+}
+
+
+.page-heading input[type="date"]:hover {
+  border-color: #383840;
+}
+
+
+.page-heading input[type="date"]:focus {
+  border-color: #50505a;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.03);
+}
+
+
+/* Calendar icon */
+
+.page-heading input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.65;
+
+  cursor: pointer;
+
+  filter: invert(1);
+}
+
+
+.page-heading input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+
+/* Remove weird inner styling */
+
+.page-heading input[type="date"]::-webkit-datetime-edit {
+  color: #cfcfd3;
+}
+
+
+.page-heading input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  color: #cfcfd3;
+}
+
+
+.page-heading input[type="date"]::-webkit-datetime-edit-text {
+  color: #5f5f67;
+}
+
+
+.page-heading input[type="date"]::-webkit-datetime-edit-month-field,
+.page-heading input[type="date"]::-webkit-datetime-edit-day-field,
+.page-heading input[type="date"]::-webkit-datetime-edit-year-field {
+  color: #cfcfd3;
+}
+
+
+.page-heading input[type="date"]::-webkit-datetime-edit-month-field:focus,
+.page-heading input[type="date"]::-webkit-datetime-edit-day-field:focus,
+.page-heading input[type="date"]::-webkit-datetime-edit-year-field:focus {
+  background: #292930;
+  color: white;
+}
