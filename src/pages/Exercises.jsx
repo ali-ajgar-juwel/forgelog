@@ -22,11 +22,7 @@ function Exercises({
         // Fallback
       }
     }
-    return [
-      { id: 'push', title: 'Push Day' },
-      { id: 'pull', title: 'Pull Day' },
-      { id: 'legs', title: 'Legs & Core' },
-    ]
+    return [] // ekhane default 3 tar bodole faka array dewa holo
   })
 
   useEffect(() => {
@@ -74,7 +70,6 @@ function Exercises({
   }
 
   if (selectedPreset) {
-    // এখানে খুব ভালোভাবে ফিল্টার করা হচ্ছে যাতে প্রেসেটের আইডি অথবা নাম ম্যাচ করে
     const presetExercises = exercises.filter((ex) => {
       const matchPresetId = ex.presetId === selectedPreset.id
       const matchMuscle = ex.muscle?.toLowerCase() === selectedPreset.title.toLowerCase()
