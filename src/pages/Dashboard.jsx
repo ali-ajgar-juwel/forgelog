@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { calculateStreak } from '../utils/helpers'
 import './Dashboard.css'
 
-
 function Dashboard({
   workouts = [],
   restDays = [],
@@ -210,10 +209,6 @@ function Dashboard({
       )
 
 
-    // IMPORTANT:
-    // App.jsx-এর updateRestDays()
-    // direct array নেয়।
-
     setRestDays(
       newDays
     )
@@ -264,14 +259,6 @@ function Dashboard({
 
   // ========================================
   // COLLECT EXERCISES
-  // ========================================
-  //
-  // Workout-এর মধ্যে যে exercise
-  // ব্যবহার হয়েছে সেগুলো বের করছি।
-  //
-  // Number/String ID mismatch যেন
-  // সমস্যা না করে সেজন্য String()
-  // ব্যবহার করছি।
   // ========================================
 
   const exerciseMap = {}
@@ -373,14 +360,6 @@ function Dashboard({
 
   // ========================================
   // PROGRESS DATA
-  // ========================================
-  //
-  // WEIGHT EXERCISE:
-  //   weight + reps
-  //
-  // TIME EXERCISE:
-  //   seconds
-  //
   // ========================================
 
   function getProgressData(
@@ -504,6 +483,8 @@ function Dashboard({
 
         let totalSetsCount = 0
 
+        let hasValidSet = false
+
 
         const sets =
           Array.isArray(
@@ -516,10 +497,13 @@ function Dashboard({
         sets.forEach(
           (set) => {
 
-            const weight =
-              Number(
-                set.weight
-              )
+            let weight = 0
+            if (set.weight === 'Body Weight' || set.weight === '' || set.weight == null) {
+              weight = 0
+            } else {
+              const parsed = Number(set.weight)
+              weight = Number.isNaN(parsed) ? 0 : parsed
+            }
 
 
             const reps =
@@ -528,31 +512,21 @@ function Dashboard({
               ) || 0
 
 
+            totalReps += reps
+            totalSetsCount += 1
+            hasValidSet = true
+
+
             if (
-              !Number.isNaN(
-                weight
-              )
+              weight >=
+              maxWeight
             ) {
 
-              totalReps +=
+              maxWeight =
+                weight
+
+              repsAtMaxWeight =
                 reps
-
-              totalSetsCount +=
-                1
-
-
-              if (
-                weight >=
-                maxWeight
-              ) {
-
-                maxWeight =
-                  weight
-
-                repsAtMaxWeight =
-                  reps
-
-              }
 
             }
 
@@ -571,7 +545,7 @@ function Dashboard({
 
 
         if (
-          maxWeight > 0
+          hasValidSet
         ) {
 
           data.push({
@@ -725,7 +699,7 @@ function Dashboard({
 
 
   // ========================================
-  // BAR HEIGHT
+  // BAR HEIGHT (Full fill for Body Weight / 0 weight)
   // ========================================
 
   function getBarHeight(
@@ -735,39 +709,15 @@ function Dashboard({
     if (
       isTimeExercise
     ) {
-
-      if (
-        bestTime <= 0
-      ) {
-        return 12
-      }
-
-
-      return Math.max(
-        12,
-        (
-          item.time /
-          bestTime
-        ) * 100
-      )
-
+      return Math.min(100, Math.max(35, (item.time / 60) * 40))
     }
 
-
-    if (
-      bestWeight <= 0
-    ) {
-      return 12
+    if (item.weight === 0) {
+      return 100
     }
 
-
-    return Math.max(
-      12,
-      (
-        item.weight /
-        bestWeight
-      ) * 100
-    )
+    const val = Math.max(50, (item.weight / (bestWeight || 50)) * 70 + 30)
+    return Math.min(100, val)
 
   }
 
@@ -780,10 +730,7 @@ function Dashboard({
 
     <div className="page">
 
-
-      {/* ==================================
-          HEADER
-      ================================== */}
+      {/* HEADER */}
 
       <div className="page-heading">
 
@@ -802,15 +749,11 @@ function Dashboard({
       </div>
 
 
-      {/* ==================================
-          WORKOUT STREAK
-      ================================== */}
+      {/* WORKOUT STREAK */}
 
       <section className="card streak-card">
 
-
         <div className="streak-header">
-
 
           <div>
 
@@ -820,8 +763,6 @@ function Dashboard({
 
 
             <div className="streak-value">
-
-              
 
               <strong>
                 {streak}
@@ -865,7 +806,6 @@ function Dashboard({
             {showRestDays && (
 
               <div className="rest-day-popup">
-
 
                 <div className="rest-popup-header">
 
@@ -965,12 +905,9 @@ function Dashboard({
         </div>
 
 
-        {/* ==================================
-            WEEK CALENDAR
-        ================================== */}
+        {/* WEEK CALENDAR */}
 
         <div className="week-calendar">
-
 
           <div className="week-days">
 
@@ -1128,14 +1065,9 @@ function Dashboard({
       </section>
 
 
-      {/* ==================================
-          STRENGTH PROGRESS
-      ================================== */}
+      {/* STRENGTH PROGRESS */}
 
       <section className="card progress-card">
-
-
-        {/* HEADER */}
 
         <div className="progress-top">
 
@@ -1198,10 +1130,6 @@ function Dashboard({
         </div>
 
 
-        {/* ==================================
-            NO EXERCISE
-        ================================== */}
-
         {exerciseOptions.length === 0 && (
 
           <div className="progress-empty">
@@ -1227,10 +1155,6 @@ function Dashboard({
 
         )}
 
-
-        {/* ==================================
-            SELECTED EXERCISE HAS NO DATA
-        ================================== */}
 
         {exerciseOptions.length > 0 &&
           progressData.length === 0 && (
@@ -1263,18 +1187,12 @@ function Dashboard({
           )}
 
 
-        {/* ==================================
-            PROGRESS DATA
-        ================================== */}
-
         {progressData.length > 0 && (
 
           <div className="progress-layout">
 
 
-            {/* ==================================
-                LEFT — STATS
-            ================================== */}
+            {/* STATS */}
 
             <div className="progress-stats-grid">
 
@@ -1353,10 +1271,7 @@ function Dashboard({
                     </span>
 
                     <strong>
-                      {currentWeight}
-                      <small>
-                        kg
-                      </small>
+                      {currentWeight === 0 ? 'Body Weight' : `${currentWeight}kg`}
                     </strong>
 
                   </div>
@@ -1369,10 +1284,7 @@ function Dashboard({
                     </span>
 
                     <strong>
-                      {bestWeight}
-                      <small>
-                        kg
-                      </small>
+                      {bestWeight === 0 ? 'Body Weight' : `${bestWeight}kg`}
                     </strong>
 
                   </div>
@@ -1410,9 +1322,7 @@ function Dashboard({
             </div>
 
 
-            {/* ==================================
-                RIGHT — BAR CHART
-            ================================== */}
+            {/* BAR CHART */}
 
             <div className="bar-chart">
 
@@ -1454,8 +1364,7 @@ function Dashboard({
                         ) : (
 
                           <>
-                            {item.weight}
-                            kg
+                            {item.weight === 0 ? 'Body Weight' : `${item.weight}kg`}
 
                             <span className="bar-reps-sub">
                               {' '}
@@ -1522,6 +1431,5 @@ function Dashboard({
   )
 
 }
-
 
 export default Dashboard

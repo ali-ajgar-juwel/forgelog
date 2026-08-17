@@ -33,11 +33,31 @@ function Workout({
 
 
   // ========================================
+  // PRESETS LOAD (Local Storage)
+  // ========================================
+
+  const [presets, setPresets] = useState(() => {
+    const saved = localStorage.getItem('forgelog_custom_presets')
+    if (saved) {
+      try {
+        return JSON.parse(saved)
+      } catch {
+        // Fallback
+      }
+    }
+    return [
+      { id: 'push', title: 'Push Day' },
+      { id: 'pull', title: 'Pull Day' },
+      { id: 'legs', title: 'Legs & Core' },
+    ]
+  })
+
+
+  // ========================================
   // GET WORKOUT FOR SELECTED DATE
   // ========================================
 
   function getWorkoutForDate(date) {
-
     return workouts.find(
       (workout) =>
         workout.date === date
@@ -50,7 +70,6 @@ function Workout({
   // ========================================
 
   function normalizeExercise(exercise) {
-
     return {
       ...exercise,
 
@@ -64,7 +83,7 @@ function Workout({
           ? exercise.sets.map((set) => ({
               ...set,
               weight:
-                set.weight ?? '',
+                set.weight ?? 'Body Weight',
               reps:
                 set.reps ?? '',
               time:
@@ -72,8 +91,8 @@ function Workout({
             }))
           : [
               {
-                id: Date.now(),
-                weight: '',
+                id: Date.now() + Math.random(),
+                weight: 'Body Weight',
                 reps: '',
                 time: '',
               },
@@ -88,7 +107,6 @@ function Workout({
 
   const [workoutExercises, setWorkoutExercises] =
     useState(() => {
-
       const workout =
         getWorkoutForDate(today)
 
@@ -103,7 +121,6 @@ function Workout({
       return workout.exercises.map(
         normalizeExercise
       )
-
     })
 
 
@@ -134,35 +151,26 @@ function Workout({
   // ========================================
 
   function handleDateChange(e) {
-
     const newDate =
       e.target.value
 
-
     setSelectedDate(newDate)
-
 
     const workout =
       getWorkoutForDate(newDate)
-
 
     if (
       workout &&
       Array.isArray(workout.exercises)
     ) {
-
       setWorkoutExercises(
         workout.exercises.map(
           normalizeExercise
         )
       )
-
     } else {
-
       setWorkoutExercises([])
-
     }
-
 
     setSavedMessage(false)
   }
@@ -171,23 +179,10 @@ function Workout({
   // ========================================
   // AUTO SAVE
   // ========================================
-  //
-  // Important:
-  // Only save when workoutExercises changes.
-  //
-  // selectedDate is also included so that
-  // switching dates does not accidentally
-  // save the previous date's data.
-  //
-  // We intentionally do NOT save when the
-  // component is loading a different date.
-  // ========================================
 
   useEffect(() => {
-
     const currentWorkout =
       getWorkoutForDate(selectedDate)
-
 
     const currentExercises =
       Array.isArray(
@@ -196,17 +191,11 @@ function Workout({
         ? currentWorkout.exercises
         : []
 
-
-    // --------------------------------------
-    // Compare current data with saved data
-    // --------------------------------------
-
     const currentJSON =
       JSON.stringify(currentExercises)
 
     const newJSON =
       JSON.stringify(workoutExercises)
-
 
     if (
       currentJSON === newJSON
@@ -214,25 +203,13 @@ function Workout({
       return
     }
 
-
-    // --------------------------------------
-    // IMPORTANT:
-    // App's saveWorkout currently saves
-    // today's date.
-    //
-    // So we only auto-save here when
-    // selectedDate === today.
-    // --------------------------------------
-
     if (
       selectedDate !== today
     ) {
       return
     }
 
-
     onSave(workoutExercises)
-
   }, [
     workoutExercises,
     selectedDate,
@@ -242,81 +219,60 @@ function Workout({
 
 
   // ========================================
-  // ADD EXERCISE
+  // ADD ENTIRE PRESET (ALL EXERCISES)
   // ========================================
 
-  function addExercise(exercise) {
+  function addPresetExercises(preset) {
+    const matchedExercises = exercises.filter((ex) => {
+      const matchPresetId = ex.presetId === preset.id
+      const matchMuscle = ex.muscle?.toLowerCase() === preset.title.toLowerCase()
+      return matchPresetId || matchMuscle
+    })
 
-    const alreadyAdded =
-      workoutExercises.some(
-        (item) =>
-          item.exerciseId === exercise.id
-      )
-
-
-    if (alreadyAdded) {
-
+    if (matchedExercises.length === 0) {
       setShowExercisePicker(false)
-
       return
     }
 
+    const newExercisesToAdd = []
 
-    const trackingType =
-      exercise.type ||
-      exercise.trackingType ||
-      'weight'
+    matchedExercises.forEach((exercise) => {
+      const alreadyAdded =
+        workoutExercises.some(
+          (item) =>
+            item.exerciseId === exercise.id || item.id === exercise.id
+        ) || newExercisesToAdd.some((item) => item.exerciseId === exercise.id)
 
+      if (!alreadyAdded) {
+        const trackingType =
+          exercise.type ||
+          exercise.trackingType ||
+          'weight'
 
-    const newExercise = {
+        newExercisesToAdd.push({
+          id: Date.now() + Math.random(),
+          exerciseId: exercise.id,
+          name: exercise.name,
+          muscle: exercise.muscle,
+          type: trackingType,
+          sets: [
+            {
+              id: Date.now() + Math.random(),
+              weight: 'Body Weight',
+              reps: '',
+              time: '',
+            },
+          ],
+        })
+      }
+    })
 
-      id: Date.now(),
-
-      exerciseId:
-        exercise.id,
-
-      name:
-        exercise.name,
-
-      muscle:
-        exercise.muscle,
-
-      type:
-        trackingType,
-
-      sets: [
-
-        {
-          id: Date.now(),
-
-          weight:
-            trackingType === 'weight'
-              ? ''
-              : '',
-
-          reps:
-            trackingType === 'weight'
-              ? ''
-              : '',
-
-          time:
-            trackingType === 'time'
-              ? ''
-              : '',
-        },
-
-      ],
-
-    }
-
-
-    setWorkoutExercises(
-      (current) => [
+    if (newExercisesToAdd.length > 0) {
+      setWorkoutExercises((current) => [
         ...current,
-        newExercise,
-      ]
-    )
-
+        ...newExercisesToAdd,
+      ])
+    }
 
     setShowExercisePicker(false)
   }
@@ -331,13 +287,10 @@ function Workout({
     setId,
     value
   ) {
-
     setWorkoutExercises(
       (currentExercises) =>
-
         currentExercises.map(
           (exercise) => {
-
             if (
               exercise.id !==
               exerciseId
@@ -345,45 +298,33 @@ function Workout({
               return exercise
             }
 
-
             return {
-
               ...exercise,
-
               sets:
                 exercise.sets.map(
                   (set) => {
-
                     if (
                       set.id !== setId
                     ) {
                       return set
                     }
 
-
                     return {
-
                       ...set,
-
                       weight:
                         value,
-
                     }
-
                   }
                 ),
-
             }
-
           }
         )
-
     )
   }
 
 
   // ========================================
-  // UPDATE REPS
+  // UPDATE REPS (WITH AUTO WEIGHT FALLBACK)
   // ========================================
 
   function updateReps(
@@ -391,13 +332,10 @@ function Workout({
     setId,
     value
   ) {
-
     setWorkoutExercises(
       (currentExercises) =>
-
         currentExercises.map(
           (exercise) => {
-
             if (
               exercise.id !==
               exerciseId
@@ -405,39 +343,34 @@ function Workout({
               return exercise
             }
 
-
             return {
-
               ...exercise,
-
               sets:
                 exercise.sets.map(
                   (set) => {
-
                     if (
                       set.id !== setId
                     ) {
                       return set
                     }
 
+                    const calculatedWeight =
+                      (set.weight === '' || set.weight === 'Body Weight') && value !== ''
+                        ? 'Body Weight'
+                        : set.weight
 
                     return {
-
                       ...set,
-
                       reps:
                         value,
-
+                      weight:
+                        calculatedWeight,
                     }
-
                   }
                 ),
-
             }
-
           }
         )
-
     )
   }
 
@@ -451,13 +384,10 @@ function Workout({
     setId,
     value
   ) {
-
     setWorkoutExercises(
       (currentExercises) =>
-
         currentExercises.map(
           (exercise) => {
-
             if (
               exercise.id !==
               exerciseId
@@ -465,39 +395,27 @@ function Workout({
               return exercise
             }
 
-
             return {
-
               ...exercise,
-
               sets:
                 exercise.sets.map(
                   (set) => {
-
                     if (
                       set.id !== setId
                     ) {
                       return set
                     }
 
-
                     return {
-
                       ...set,
-
                       time:
                         value,
-
                     }
-
                   }
                 ),
-
             }
-
           }
         )
-
     )
   }
 
@@ -507,13 +425,10 @@ function Workout({
   // ========================================
 
   function addSet(exerciseId) {
-
     setWorkoutExercises(
       (currentExercises) =>
-
         currentExercises.map(
           (exercise) => {
-
             if (
               exercise.id !==
               exerciseId
@@ -521,47 +436,20 @@ function Workout({
               return exercise
             }
 
-
-            const isTime =
-              exercise.type === 'time'
-
-
             return {
-
               ...exercise,
-
               sets: [
-
                 ...exercise.sets,
-
                 {
-
-                  id: Date.now(),
-
-                  weight:
-                    isTime
-                      ? ''
-                      : '',
-
-                  reps:
-                    isTime
-                      ? ''
-                      : '',
-
-                  time:
-                    isTime
-                      ? ''
-                      : '',
-
+                  id: Date.now() + Math.random(),
+                  weight: 'Body Weight',
+                  reps: '',
+                  time: '',
                 },
-
               ],
-
             }
-
           }
         )
-
     )
   }
 
@@ -574,13 +462,10 @@ function Workout({
     exerciseId,
     setId
   ) {
-
     setWorkoutExercises(
       (currentExercises) =>
-
         currentExercises.map(
           (exercise) => {
-
             if (
               exercise.id !==
               exerciseId
@@ -588,31 +473,22 @@ function Workout({
               return exercise
             }
 
-
-            // Keep at least one set
-
             if (
               exercise.sets.length <= 1
             ) {
               return exercise
             }
 
-
             return {
-
               ...exercise,
-
               sets:
                 exercise.sets.filter(
                   (set) =>
                     set.id !== setId
                 ),
-
             }
-
           }
         )
-
     )
   }
 
@@ -624,7 +500,6 @@ function Workout({
   function requestRemoveExercise(
     exercise
   ) {
-
     setDeletingExercise(exercise)
   }
 
@@ -636,18 +511,14 @@ function Workout({
   function confirmRemoveExercise(
     exerciseId
   ) {
-
     setWorkoutExercises(
       (currentExercises) =>
-
         currentExercises.filter(
           (exercise) =>
             exercise.id !==
             exerciseId
         )
-
     )
-
 
     setDeletingExercise(null)
   }
@@ -658,30 +529,16 @@ function Workout({
   // ========================================
 
   return (
-
     <div className="page">
-
-
-      {/* ==================================
-          HEADER
-      ================================== */}
-
       <div className="page-heading">
-
         <div>
-
           <p className="eyebrow">
             WORKOUT
           </p>
-
           <h2>
             Workout
           </h2>
-
         </div>
-
-
-        {/* DATE */}
 
         <input
           className="workout-date"
@@ -690,35 +547,19 @@ function Workout({
           max={today}
           onChange={handleDateChange}
         />
-
       </div>
 
-
-      {/* ==================================
-          SELECTED DATE
-      ================================== */}
-
       <div className="workout-date-label">
-
         {selectedDate === today
           ? 'TODAY'
           : formatDate(selectedDate)}
-
       </div>
 
-
-      {/* ==================================
-          EMPTY STATE
-      ================================== */}
-
       {workoutExercises.length === 0 && (
-
         <section className="card workout-empty">
-
           <div className="workout-icon">
             +
           </div>
-
 
           <h3>
             {selectedDate === today
@@ -726,89 +567,57 @@ function Workout({
               : 'No workout recorded'}
           </h3>
 
-
           <p>
             {selectedDate === today
-              ? 'Add the exercises you performed today and record your sets.'
+              ? 'Select a workout preset to start tracking.'
               : 'There is no workout recorded for this date.'}
           </p>
 
-
           {selectedDate === today && (
-
             <button
               className="primary-button"
               onClick={() =>
                 setShowExercisePicker(true)
               }
             >
-              + Add Exercise
+              + Select Preset
             </button>
-
           )}
-
         </section>
-
       )}
 
-
-      {/* ==================================
-          WORKOUT EXERCISES
-      ================================== */}
-
       {workoutExercises.length > 0 && (
-
         <div className="workout-list">
-
-
           {workoutExercises.map(
             (exercise, index) => {
-
               const isTime =
                 exercise.type === 'time' ||
                 exercise.trackingType === 'time'
 
-
               return (
-
                 <section
                   className="card workout-card"
                   key={exercise.id}
                 >
-
-
-                  {/* ==========================
-                      EXERCISE HEADER
-                  ========================== */}
-
                   <div className="workout-card-header">
-
                     <div>
-
                       <span className="exercise-number">
                         {String(
                           index + 1
                         ).padStart(2, '0')}
                       </span>
 
-
                       <div>
-
                         <h3>
                           {exercise.name}
                         </h3>
-
                         <span>
                           {exercise.muscle}
                         </span>
-
                       </div>
-
                     </div>
 
-
                     {selectedDate === today && (
-
                       <button
                         className="remove-exercise"
                         onClick={() =>
@@ -819,72 +628,39 @@ function Workout({
                       >
                         ×
                       </button>
-
                     )}
-
                   </div>
 
-
-                  {/* ==========================
-                      SET HEADER
-                  ========================== */}
-
                   <div className="sets-header">
-
                     <span>
                       SET
                     </span>
-
-
                     <span>
                       {isTime
                         ? 'TIME'
                         : 'WEIGHT'}
                     </span>
-
-
                     {!isTime && (
-
                       <span>
                         REPS
                       </span>
-
                     )}
-
-
                     <span />
-
                   </div>
 
-
-                  {/* ==========================
-                      SETS
-                  ========================== */}
-
                   <div className="sets-list">
-
                     {exercise.sets.map(
                       (set, setIndex) => (
-
                         <div
                           className="set-row"
                           key={set.id}
                         >
-
-
-                          {/* SET NUMBER */}
-
                           <span className="set-number">
                             {setIndex + 1}
                           </span>
 
-
-                          {/* TIME */}
-
                           {isTime ? (
-
                             <div className="set-input">
-
                               <input
                                 type="number"
                                 min="0"
@@ -905,25 +681,16 @@ function Workout({
                                   )
                                 }
                               />
-
                               <span>
                                 sec
                               </span>
-
                             </div>
-
                           ) : (
-
                             <>
-                              {/* WEIGHT */}
-
                               <div className="set-input">
-
                                 <input
-                                  type="number"
-                                  min="0"
-                                  step="0.5"
-                                  placeholder="0"
+                                  type="text"
+                                  placeholder="Body Weight"
                                   value={
                                     set.weight ??
                                     ''
@@ -940,15 +707,10 @@ function Workout({
                                     )
                                   }
                                 />
-
-                                <span>
-                                  kg
+                                <span style={{ fontSize: '11px', opacity: 0.7 }}>
+                                  {set.weight === '' || set.weight === 'Body Weight' ? '' : 'kg'}
                                 </span>
-
                               </div>
-
-
-                              {/* REPS */}
 
                               <input
                                 type="number"
@@ -970,16 +732,10 @@ function Workout({
                                   )
                                 }
                               />
-
                             </>
-
                           )}
 
-
-                          {/* REMOVE SET */}
-
                           {selectedDate === today ? (
-
                             <button
                               className="remove-set"
                               onClick={() =>
@@ -991,27 +747,15 @@ function Workout({
                             >
                               ×
                             </button>
-
                           ) : (
-
                             <span />
-
                           )}
-
                         </div>
-
                       )
                     )}
-
                   </div>
 
-
-                  {/* ==========================
-                      ADD SET
-                  ========================== */}
-
                   {selectedDate === today && (
-
                     <button
                       className="add-set-button"
                       onClick={() =>
@@ -1022,109 +766,79 @@ function Workout({
                     >
                       + Add Set
                     </button>
-
                   )}
-
                 </section>
-
               )
-
             }
           )}
 
-
-          {/* ==================================
-              ADD EXERCISE
-          ================================== */}
-
           {selectedDate === today && (
-
             <button
               className="add-workout-exercise"
               onClick={() =>
                 setShowExercisePicker(true)
               }
             >
-              + Add Exercise
+              + Select Another Preset
             </button>
-
           )}
 
-
-          {/* ==================================
-              SAVED MESSAGE
-          ================================== */}
-
           {selectedDate === today && savedMessage && (
-
             <div className="auto-save-message">
               ✓ Workout saved
             </div>
-
           )}
-
         </div>
-
       )}
-
-
-      {/* ==================================
-          EXERCISE PICKER
-      ================================== */}
 
       {showExercisePicker && (
+        <div className="modal-overlay" onClick={() => setShowExercisePicker(false)}>
+          <div className="form-modal picker-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div>
+                <p className="eyebrow">SELECT WORKOUT</p>
+                <h3>Choose a Preset</h3>
+              </div>
+              <button className="close-button" onClick={() => setShowExercisePicker(false)}>×</button>
+            </div>
 
-        <ExercisePicker
-
-          exercises={
-            exercises
-          }
-
-          selectedExercises={
-            workoutExercises
-          }
-
-          onSelect={
-            addExercise
-          }
-
-          onClose={() =>
-            setShowExercisePicker(false)
-          }
-
-        />
-
+            <div className="picker-list">
+              {presets.length === 0 ? (
+                <p style={{ textAlign: 'center', opacity: 0.6, padding: '20px' }}>No presets found. Create presets in the Exercises tab first.</p>
+              ) : (
+                <div style={{ display: 'grid', gap: '8px' }}>
+                  {presets.map((preset) => (
+                    <button
+                      key={preset.id}
+                      className="picker-item"
+                      onClick={() => addPresetExercises(preset)}
+                    >
+                      <strong>{preset.title}</strong>
+                      <span>›</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
 
-
-      {/* ==================================
-          DELETE MODAL
-      ================================== */}
-
       {deletingExercise && (
-
         <DeleteModal
-
           exercise={
             deletingExercise
           }
-
           onDelete={
             confirmRemoveExercise
           }
-
           onClose={() =>
             setDeletingExercise(null)
           }
-
         />
-
       )}
-
     </div>
-
   )
 }
-
 
 export default Workout

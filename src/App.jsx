@@ -75,28 +75,12 @@ const defaultRestDays = [5]
 // ========================================
 // GET LOCAL DATE
 // ========================================
-// UTC ব্যবহার করছি না।
-// এতে Bangladesh/local timezone এ date ভুল হওয়ার
-// chance থাকবে না.
-// ========================================
 
 function getLocalDateString() {
-
   const date = new Date()
-
-  const year =
-    date.getFullYear()
-
-  const month =
-    String(
-      date.getMonth() + 1
-    ).padStart(2, '0')
-
-  const day =
-    String(
-      date.getDate()
-    ).padStart(2, '0')
-
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
   return `${year}-${month}-${day}`
 }
 
@@ -106,23 +90,17 @@ function getLocalDateString() {
 // ========================================
 
 function normalizeExercises(data) {
-
   if (!Array.isArray(data)) {
     return []
   }
 
-  return data.map(
-    (exercise) => ({
-
-      ...exercise,
-
-      type:
-        exercise.type ||
-        exercise.trackingType ||
-        'weight',
-
-    })
-  )
+  return data.map((exercise) => ({
+    ...exercise,
+    type:
+      exercise.type ||
+      exercise.trackingType ||
+      'weight',
+  }))
 }
 
 
@@ -131,7 +109,6 @@ function normalizeExercises(data) {
 // ========================================
 
 function normalizeWorkouts(data) {
-
   if (!Array.isArray(data)) {
     return []
   }
@@ -142,24 +119,15 @@ function normalizeWorkouts(data) {
         workout &&
         typeof workout === 'object'
     )
-    .map(
-      (workout) => ({
-
-        ...workout,
-
-        exercises:
-          Array.isArray(
-            workout.exercises
-          )
-            ? workout.exercises
-            : [],
-
-      })
-    )
-    .filter(
-      (workout) =>
-        workout.date
-    )
+    .map((workout) => ({
+      ...workout,
+      exercises: Array.isArray(
+        workout.exercises
+      )
+        ? workout.exercises
+        : [],
+    }))
+    .filter((workout) => workout.date)
 }
 
 
@@ -168,7 +136,6 @@ function normalizeWorkouts(data) {
 // ========================================
 
 function App() {
-
 
   // ========================================
   // ACTIVE PAGE
@@ -181,14 +148,13 @@ function App() {
 
 
   // ========================================
-  // EXERCISES
+  // EXERCISES (Fixed to allow 0 exercises)
   // ========================================
 
   const [
     exercises,
     setExercises,
   ] = useState(() => {
-
     const saved =
       localStorage.getItem(
         'forgelog_exercises'
@@ -199,27 +165,11 @@ function App() {
     }
 
     try {
-
-      const parsed =
-        JSON.parse(saved)
-
-      const normalized =
-        normalizeExercises(parsed)
-
-      if (
-        normalized.length === 0
-      ) {
-        return defaultExercises
-      }
-
-      return normalized
-
+      const parsed = JSON.parse(saved)
+      return normalizeExercises(parsed)
     } catch {
-
       return defaultExercises
-
     }
-
   })
 
 
@@ -231,7 +181,6 @@ function App() {
     workouts,
     setWorkouts,
   ] = useState(() => {
-
     const saved =
       localStorage.getItem(
         'forgelog_workouts'
@@ -242,20 +191,11 @@ function App() {
     }
 
     try {
-
-      const parsed =
-        JSON.parse(saved)
-
-      return normalizeWorkouts(
-        parsed
-      )
-
+      const parsed = JSON.parse(saved)
+      return normalizeWorkouts(parsed)
     } catch {
-
       return []
-
     }
-
   })
 
 
@@ -267,7 +207,6 @@ function App() {
     restDays,
     setRestDays,
   ] = useState(() => {
-
     const saved =
       localStorage.getItem(
         'forgelog_rest_days'
@@ -278,24 +217,16 @@ function App() {
     }
 
     try {
+      const parsed = JSON.parse(saved)
 
-      const parsed =
-        JSON.parse(saved)
-
-      if (
-        !Array.isArray(parsed)
-      ) {
+      if (!Array.isArray(parsed)) {
         return defaultRestDays
       }
 
       return parsed
-
     } catch {
-
       return defaultRestDays
-
     }
-
   })
 
 
@@ -308,10 +239,15 @@ function App() {
     setShowExerciseModal,
   ] = useState(false)
 
-
   const [
     editingExercise,
     setEditingExercise,
+  ] = useState(null)
+
+  // নির্দিষ্ট প্রেসেটের ভেতরে থেকে অ্যাড করার সময় প্রেসেট ট্র্যাক করার স্টেট
+  const [
+    activePresetContext,
+    setActivePresetContext,
   ] = useState(null)
 
 
@@ -330,12 +266,10 @@ function App() {
   // ========================================
 
   useEffect(() => {
-
     localStorage.setItem(
       'forgelog_exercises',
       JSON.stringify(exercises)
     )
-
   }, [exercises])
 
 
@@ -344,12 +278,10 @@ function App() {
   // ========================================
 
   useEffect(() => {
-
     localStorage.setItem(
       'forgelog_workouts',
       JSON.stringify(workouts)
     )
-
   }, [workouts])
 
 
@@ -358,12 +290,10 @@ function App() {
   // ========================================
 
   useEffect(() => {
-
     localStorage.setItem(
       'forgelog_rest_days',
       JSON.stringify(restDays)
     )
-
   }, [restDays])
 
 
@@ -371,12 +301,10 @@ function App() {
   // ADD EXERCISE MODAL
   // ========================================
 
-  function handleAddExercise() {
-
+  function handleAddExercise(preset = null) {
     setEditingExercise(null)
-
+    setActivePresetContext(preset)
     setShowExerciseModal(true)
-
   }
 
 
@@ -384,16 +312,10 @@ function App() {
   // EDIT EXERCISE MODAL
   // ========================================
 
-  function handleEditExercise(
-    exercise
-  ) {
-
-    setEditingExercise(
-      exercise
-    )
-
+  function handleEditExercise(exercise) {
+    setEditingExercise(exercise)
+    setActivePresetContext(null)
     setShowExerciseModal(true)
-
   }
 
 
@@ -406,34 +328,23 @@ function App() {
     muscle,
     type
   ) {
-
     const newExercise = {
-
       id: Date.now(),
-
-      name:
-        name.trim(),
-
-      muscle,
-
+      name: name.trim(),
+      muscle: muscle || (activePresetContext ? activePresetContext.title : 'Chest'),
+      presetId: activePresetContext ? activePresetContext.id : undefined,
       type:
         type === 'time'
           ? 'time'
           : 'weight',
-
     }
-
 
     setExercises(
       (currentExercises) => [
-
         ...currentExercises,
-
         newExercise,
-
       ]
     )
-
   }
 
 
@@ -447,96 +358,55 @@ function App() {
     muscle,
     type
   ) {
-
     setExercises(
       (currentExercises) =>
-
         currentExercises.map(
           (exercise) => {
-
-            if (
-              exercise.id === id
-            ) {
-
+            if (exercise.id === id) {
               return {
-
                 ...exercise,
-
-                name:
-                  name.trim(),
-
+                name: name.trim(),
                 muscle,
-
                 type:
                   type === 'time'
                     ? 'time'
                     : 'weight',
-
               }
-
             }
-
             return exercise
-
           }
         )
-
     )
-
   }
 
 
   // ========================================
-  // SAVE EXERCISE
-  // ADD + EDIT
+  // SAVE EXERCISE (ADD + EDIT)
   // ========================================
 
-  function handleSaveExercise(
-    data
-  ) {
-
+  function handleSaveExercise(data) {
     if (!data) {
       return
     }
 
-
     if (data.id) {
-
       updateExercise(
-
         data.id,
-
         data.name,
-
         data.muscle,
-
         data.type
-
       )
-
     } else {
-
       addExercise(
-
         data.name,
-
         data.muscle,
-
         data.type
-
       )
-
     }
 
-
-    setShowExerciseModal(
-      false
-    )
-
-    setEditingExercise(
-      null
-    )
-
+    setShowExerciseModal(false)
+    setEditingExercise(null)
+    setActivePresetContext(null)
   }
 
 
@@ -544,14 +414,8 @@ function App() {
   // DELETE REQUEST
   // ========================================
 
-  function handleDeleteRequest(
-    exercise
-  ) {
-
-    setDeletingExercise(
-      exercise
-    )
-
+  function handleDeleteRequest(exercise) {
+    setDeletingExercise(exercise)
   }
 
 
@@ -559,20 +423,14 @@ function App() {
   // DELETE EXERCISE
   // ========================================
 
-  function deleteExercise(
-    id
-  ) {
-
+  function deleteExercise(id) {
     setExercises(
       (currentExercises) =>
-
         currentExercises.filter(
           (exercise) =>
             exercise.id !== id
         )
-
     )
-
   }
 
 
@@ -580,16 +438,9 @@ function App() {
   // CONFIRM DELETE
   // ========================================
 
-  function handleDeleteExercise(
-    id
-  ) {
-
+  function handleDeleteExercise(id) {
     deleteExercise(id)
-
-    setDeletingExercise(
-      null
-    )
-
+    setDeletingExercise(null)
   }
 
 
@@ -597,86 +448,40 @@ function App() {
   // SAVE / UPDATE WORKOUT
   // ========================================
 
-  function saveWorkout(
-    workoutData
-  ) {
-
-    // --------------------------------------
-    // Safety check
-    // --------------------------------------
-
+  function saveWorkout(workoutData) {
     const safeWorkoutData =
       Array.isArray(workoutData)
         ? workoutData
         : []
 
-
-    const today =
-      getLocalDateString()
-
+    const today = getLocalDateString()
 
     setWorkouts(
       (currentWorkouts) => {
-
-        // ----------------------------------
-        // Find today's workout
-        // ----------------------------------
-
         const existingIndex =
           currentWorkouts.findIndex(
             (workout) =>
               workout.date === today
           )
 
-
-        // ----------------------------------
-        // REMOVE TODAY'S WORKOUT
-        // ----------------------------------
-
         if (
           safeWorkoutData.length === 0
         ) {
-
-          if (
-            existingIndex === -1
-          ) {
-
-            // Nothing changed.
-            // IMPORTANT:
-            // Don't return a new array.
-            // This prevents unnecessary renders.
-
+          if (existingIndex === -1) {
             return currentWorkouts
-
           }
-
 
           return currentWorkouts.filter(
             (workout) =>
               workout.date !== today
           )
-
         }
 
-
-        // ----------------------------------
-        // UPDATE TODAY'S WORKOUT
-        // ----------------------------------
-
-        if (
-          existingIndex !== -1
-        ) {
-
+        if (existingIndex !== -1) {
           const oldWorkout =
             currentWorkouts[
               existingIndex
             ]
-
-
-          // --------------------------------
-          // Check whether data actually
-          // changed.
-          // --------------------------------
 
           const oldData =
             JSON.stringify(
@@ -688,71 +493,36 @@ function App() {
               safeWorkoutData
             )
 
-
-          if (
-            oldData === newData
-          ) {
-
-            // VERY IMPORTANT
-            //
-            // If Workout.jsx accidentally
-            // calls onSave with the same data,
-            // don't update state again.
-
+          if (oldData === newData) {
             return currentWorkouts
-
           }
-
 
           const updatedWorkouts = [
             ...currentWorkouts,
           ]
 
-
           updatedWorkouts[
             existingIndex
           ] = {
-
             ...oldWorkout,
-
-            exercises:
-              safeWorkoutData,
-
+            exercises: safeWorkoutData,
           }
 
-
           return updatedWorkouts
-
         }
-
-
-        // ----------------------------------
-        // CREATE NEW WORKOUT
-        // ----------------------------------
 
         const newWorkout = {
-
           id: Date.now(),
-
           date: today,
-
-          exercises:
-            safeWorkoutData,
-
+          exercises: safeWorkoutData,
         }
 
-
         return [
-
           ...currentWorkouts,
-
           newWorkout,
-
         ]
-
       }
     )
-
   }
 
 
@@ -760,70 +530,39 @@ function App() {
   // UPDATE REST DAYS
   // ========================================
 
-  function updateRestDays(
-    newRestDays
-  ) {
-
+  function updateRestDays(newRestDays) {
     if (
       !Array.isArray(newRestDays)
     ) {
       return
     }
 
-
-    // Remove duplicates
-    // and sort days.
-
-    const cleanedDays =
-      [
-        ...new Set(
-          newRestDays
-            .map(
-              Number
-            )
-            .filter(
-              (day) =>
-                day >= 0 &&
-                day <= 6
-            )
-        ),
-      ].sort(
-        (a, b) =>
-          a - b
-      )
-
+    const cleanedDays = [
+      ...new Set(
+        newRestDays
+          .map(Number)
+          .filter(
+            (day) =>
+              day >= 0 &&
+              day <= 6
+          )
+      ),
+    ].sort((a, b) => a - b)
 
     setRestDays(
       (currentDays) => {
-
         const oldValue =
-          JSON.stringify(
-            currentDays
-          )
-
+          JSON.stringify(currentDays)
         const newValue =
-          JSON.stringify(
-            cleanedDays
-          )
+          JSON.stringify(cleanedDays)
 
-
-        // Don't update if
-        // nothing changed.
-
-        if (
-          oldValue === newValue
-        ) {
-
+        if (oldValue === newValue) {
           return currentDays
-
         }
 
-
         return cleanedDays
-
       }
     )
-
   }
 
 
@@ -832,107 +571,48 @@ function App() {
   // ========================================
 
   function renderPage() {
-
-
-    // ======================================
-    // DASHBOARD
-    // ======================================
-
     if (
       activePage === 'dashboard'
     ) {
-
       return (
-
         <Dashboard
-
-          workouts={
-            workouts
-          }
-
-          restDays={
-            restDays
-          }
-
+          workouts={workouts}
+          restDays={restDays}
           setRestDays={
             updateRestDays
           }
-
         />
-
       )
-
     }
-
-
-    // ======================================
-    // WORKOUT
-    // ======================================
 
     if (
       activePage === 'workout'
     ) {
-
       return (
-
         <Workout
-
-          exercises={
-            exercises
-          }
-
-          workouts={
-            workouts
-          }
-
-          onSave={
-            saveWorkout
-          }
-
+          exercises={exercises}
+          workouts={workouts}
+          onSave={saveWorkout}
         />
-
       )
-
     }
-
-
-    // ======================================
-    // EXERCISES
-    // ======================================
 
     if (
       activePage === 'exercises'
     ) {
-
       return (
-
         <Exercises
-
-          exercises={
-            exercises
-          }
-
-          onAdd={
-            handleAddExercise
-          }
-
-          onEdit={
-            handleEditExercise
-          }
-
+          exercises={exercises}
+          onAdd={handleAddExercise}
+          onEdit={handleEditExercise}
           onDelete={
             handleDeleteRequest
           }
-
         />
-
       )
-
     }
 
-
     return null
-
   }
 
 
@@ -941,111 +621,50 @@ function App() {
   // ========================================
 
   return (
-
     <div className="app">
-
-
-      {/* ==================================
-          TOP BAR
-      ================================== */}
-
       <TopBar />
 
-
-      {/* ==================================
-          MAIN CONTENT
-      ================================== */}
-
       <main className="content">
-
         {renderPage()}
-
       </main>
 
-
-      {/* ==================================
-          BOTTOM NAVIGATION
-      ================================== */}
-
       <BottomNav
-
-        activePage={
-          activePage
-        }
-
-        setActivePage={
-          setActivePage
-        }
-
+        activePage={activePage}
+        setActivePage={setActivePage}
       />
 
-
-      {/* ==================================
-          ADD / EDIT EXERCISE MODAL
-      ================================== */}
-
       {showExerciseModal && (
-
         <ExerciseModal
-
-          exercise={
-            editingExercise
-          }
-
-          onSave={
-            handleSaveExercise
-          }
-
+          exercise={editingExercise}
+          defaultMuscle={activePresetContext ? activePresetContext.title : ''}
+          onSave={handleSaveExercise}
           onClose={() => {
-
             setShowExerciseModal(
               false
             )
-
             setEditingExercise(
               null
             )
-
+            setActivePresetContext(null)
           }}
-
         />
-
       )}
 
-
-      {/* ==================================
-          DELETE EXERCISE MODAL
-      ================================== */}
-
       {deletingExercise && (
-
         <DeleteModal
-
-          exercise={
-            deletingExercise
-          }
-
+          exercise={deletingExercise}
           onDelete={
             handleDeleteExercise
           }
-
           onClose={() => {
-
             setDeletingExercise(
               null
             )
-
           }}
-
         />
-
       )}
-
     </div>
-
   )
-
 }
-
 
 export default App
